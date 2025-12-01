@@ -4,8 +4,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ComplaintCard } from "@/components/ComplaintCard";
-import { Plus, LogOut, GraduationCap } from "lucide-react";
+import { Plus, LogOut } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import logo from "@/assets/logo.png";
 
 interface Complaint {
   id: string;
@@ -57,11 +58,8 @@ export default function StudentDashboard() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                <GraduationCap className="h-6 w-6 text-primary-foreground" />
-              </div>
+              <img src={logo} alt="GenCorpus Logo" className="h-10 w-auto" />
               <div>
-                <h1 className="text-xl font-bold">GenCorpus Portal</h1>
                 <p className="text-sm text-muted-foreground">{profile.name}</p>
               </div>
             </div>

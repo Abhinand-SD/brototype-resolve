@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, GraduationCap } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { z } from "zod";
+import logo from "@/assets/logo.png";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -113,15 +114,7 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
       <div className="w-full max-w-md">
         <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center shadow-medium">
-              <GraduationCap className="h-7 w-7 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight">GenCorpus</h1>
-              <p className="text-sm text-muted-foreground">Complaint Portal</p>
-            </div>
-          </div>
+          <img src={logo} alt="GenCorpus Logo" className="h-16 w-auto" />
         </div>
 
         <Card className="shadow-strong">
