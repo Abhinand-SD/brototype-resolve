@@ -35,11 +35,11 @@ export default function ComplaintDetail() {
   const [newStatus, setNewStatus] = useState<"pending" | "processing" | "resolved" | "closed">("pending");
   const [resolutionNote, setResolutionNote] = useState("");
   const { id } = useParams();
-  const { profile } = useAuth();
+  const { profile, userRole } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const isAdmin = profile?.role === "admin";
+  const isAdmin = userRole?.role === "admin";
 
   useEffect(() => {
     fetchComplaint();

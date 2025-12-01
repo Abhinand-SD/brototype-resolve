@@ -20,7 +20,7 @@ interface Complaint {
 export default function StudentDashboard() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, userRole, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function StudentDashboard() {
       return;
     }
 
-    if (profile?.role === "admin") {
+    if (userRole?.role === "admin") {
       navigate("/admin/dashboard");
       return;
     }
@@ -61,7 +61,7 @@ export default function StudentDashboard() {
                 <GraduationCap className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold">Brototype Portal</h1>
+                <h1 className="text-xl font-bold">GenCorpus Portal</h1>
                 <p className="text-sm text-muted-foreground">{profile.name}</p>
               </div>
             </div>

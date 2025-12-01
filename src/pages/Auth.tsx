@@ -21,13 +21,13 @@ const signupSchema = loginSchema.extend({
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, signUp, user, profile } = useAuth();
+  const { signIn, signUp, user, profile, userRole } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   // Redirect if already logged in
-  if (user && profile) {
-    const redirectPath = profile.role === "admin" ? "/admin/dashboard" : "/student/dashboard";
+  if (user && profile && userRole) {
+    const redirectPath = userRole.role === "admin" ? "/admin/dashboard" : "/student/dashboard";
     navigate(redirectPath, { replace: true });
     return null;
   }
@@ -93,7 +93,7 @@ export default function Auth() {
       } else {
         toast({
           title: "Account created!",
-          description: "Welcome to Brototype Complaint Portal",
+          description: "Welcome to GenCorpus Complaint Portal",
         });
       }
     } catch (err) {
@@ -118,7 +118,7 @@ export default function Auth() {
               <GraduationCap className="h-7 w-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Brototype</h1>
+              <h1 className="text-2xl font-bold tracking-tight">GenCorpus</h1>
               <p className="text-sm text-muted-foreground">Complaint Portal</p>
             </div>
           </div>
