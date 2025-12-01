@@ -204,8 +204,8 @@ export default function AdminDashboard() {
                       <TableCell className="font-medium">{complaint.title}</TableCell>
                       <TableCell>
                         <div>
-                          <p className="text-sm">{complaint.profiles.name}</p>
-                          <p className="text-xs text-muted-foreground">{complaint.profiles.email}</p>
+                          <p className="text-sm">{complaint.profiles?.name || 'Unknown'}</p>
+                          <p className="text-xs text-muted-foreground">{complaint.profiles?.email || 'N/A'}</p>
                         </div>
                       </TableCell>
                       <TableCell>{complaint.category}</TableCell>
