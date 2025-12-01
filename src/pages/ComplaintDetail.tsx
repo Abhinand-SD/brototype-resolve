@@ -25,7 +25,7 @@ interface Complaint {
   profiles: {
     name: string;
     email: string;
-  };
+  } | null;
 }
 
 export default function ComplaintDetail() {
@@ -154,8 +154,8 @@ export default function ComplaintDetail() {
             <CardContent className="space-y-4">
               <div>
                 <Label className="text-sm font-medium">Student</Label>
-                <p className="mt-1">{complaint.profiles.name}</p>
-                <p className="text-sm text-muted-foreground">{complaint.profiles.email}</p>
+                <p className="mt-1">{complaint.profiles?.name || 'Unknown'}</p>
+                <p className="text-sm text-muted-foreground">{complaint.profiles?.email || 'N/A'}</p>
               </div>
 
               <div>
