@@ -86,7 +86,7 @@ export default function Index() {
 
       <footer className="container mx-auto px-4 py-8 mt-16 border-t">
         <div className="text-center text-sm text-muted-foreground">
-          <p>© 2024 GenCorpus Complaint Portal. Built for transparency and efficiency.</p>
+          <p>© 2025 GenCorpus Complaint Portal. Built for transparency and efficiency.</p>
         </div>
       </footer>
     </div>
