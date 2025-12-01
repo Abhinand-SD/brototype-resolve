@@ -15,7 +15,7 @@ export default function Index() {
               <GraduationCap className="h-7 w-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">Brototype</h1>
+              <h1 className="text-2xl font-bold tracking-tight">GenCorpus</h1>
               <p className="text-sm text-muted-foreground">Complaint Management Portal</p>
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function Index() {
 
       <footer className="container mx-auto px-4 py-8 mt-16 border-t">
         <div className="text-center text-sm text-muted-foreground">
-          <p>© 2024 Brototype Complaint Portal. Built for transparency and efficiency.</p>
+          <p>© 2024 GenCorpus Complaint Portal. Built for transparency and efficiency.</p>
         </div>
       </footer>
     </div>

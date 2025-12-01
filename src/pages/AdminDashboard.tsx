@@ -28,7 +28,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, userRole, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (profile?.role !== "admin") {
+    if (userRole?.role !== "admin") {
       navigate("/student/dashboard");
       return;
     }
