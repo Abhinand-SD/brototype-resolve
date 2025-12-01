@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/StatusBadge";
-import { LogOut, Shield, Filter } from "lucide-react";
+import { LogOut, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import logo from "@/assets/logo.png";
 
 interface Complaint {
   id: string;
@@ -96,9 +97,7 @@ export default function AdminDashboard() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
-                <Shield className="h-6 w-6 text-primary-foreground" />
-              </div>
+              <img src={logo} alt="GenCorpus Logo" className="h-10 w-auto" />
               <div>
                 <h1 className="text-xl font-bold">Admin Dashboard</h1>
                 <p className="text-sm text-muted-foreground">{profile.name}</p>

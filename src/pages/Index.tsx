@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { GraduationCap, Shield, FileText, Clock, CheckCircle2 } from "lucide-react";
+import { FileText, Clock, CheckCircle2 } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -11,13 +12,7 @@ export default function Index() {
       <header className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center shadow-medium">
-              <GraduationCap className="h-7 w-7 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight">GenCorpus</h1>
-              <p className="text-sm text-muted-foreground">Complaint Management Portal</p>
-            </div>
+            <img src={logo} alt="GenCorpus Logo" className="h-14 w-auto" />
           </div>
           <Button onClick={() => navigate("/auth")}>Sign In</Button>
         </div>
@@ -34,9 +29,6 @@ export default function Index() {
           <div className="flex gap-4 justify-center">
             <Button size="lg" onClick={() => navigate("/auth")}>
               Get Started
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => navigate("/auth")}>
-              Admin Login
             </Button>
           </div>
         </div>
@@ -80,21 +72,14 @@ export default function Index() {
         </div>
 
         <Card className="shadow-strong bg-gradient-to-br from-primary to-accent text-primary-foreground">
-          <CardContent className="p-8">
-            <div className="flex items-center gap-6">
-              <div className="h-16 w-16 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
-                <Shield className="h-9 w-9" />
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2">For Administrators</h3>
-                <p className="opacity-90 mb-4">
-                  Manage all complaints efficiently with our comprehensive admin dashboard. Track, update, and resolve issues with ease.
-                </p>
-                <Button variant="secondary" onClick={() => navigate("/auth")}>
-                  Access Admin Portal
-                </Button>
-              </div>
-            </div>
+          <CardContent className="p-8 text-center">
+            <h3 className="text-2xl font-bold mb-3">Transparent. Efficient. Accessible.</h3>
+            <p className="opacity-90 text-lg mb-6">
+              Whether you're a student submitting a complaint or an administrator managing resolutions, our platform provides a seamless experience for everyone.
+            </p>
+            <Button size="lg" variant="secondary" onClick={() => navigate("/auth")}>
+              Get Started Now
+            </Button>
           </CardContent>
         </Card>
       </main>
