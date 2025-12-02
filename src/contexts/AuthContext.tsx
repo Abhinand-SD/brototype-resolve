@@ -126,6 +126,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     navigate("/auth");
   };
 
+  // Check email verification status for students only
+  useEffect(() => {
+    if (user && !user.email_confirmed_at && userRole?.role === 'student') {
+      navigate("/verify-email");
+    }
+  }, [user, userRole, navigate]);
+
   return (
     <AuthContext.Provider
       value={{

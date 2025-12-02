@@ -71,6 +71,8 @@ export default function ComplaintDetail() {
 
     setUpdating(true);
 
+    const oldStatus = complaint.status;
+
     const { error } = await supabase
       .from("complaints")
       .update({
@@ -80,6 +82,7 @@ export default function ComplaintDetail() {
       .eq("id", complaint.id);
 
     if (error) {
+      console.error("Update error:", error);
       toast({
         title: "Error",
         description: "Failed to update complaint",
@@ -90,6 +93,25 @@ export default function ComplaintDetail() {
         title: "Success",
         description: "Complaint updated successfully",
       });
+      
+      // Send email notification
+      if (complaint.profiles) {
+        try {
+          await supabase.functions.invoke('send-status-update-email', {
+            body: {
+              studentEmail: complaint.profiles.email,
+              studentName: complaint.profiles.name,
+              complaintTitle: complaint.title,
+              oldStatus,
+              newStatus,
+              resolutionNote: resolutionNote || undefined,
+            },
+          });
+        } catch (emailError) {
+          console.error("Error sending email:", emailError);
+        }
+      }
+      
       fetchComplaint();
     }
 
