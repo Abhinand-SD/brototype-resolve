@@ -126,12 +126,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     navigate("/auth");
   };
 
-  // Check email verification status for students only
+  // Check email verification status - redirect unverified users (except admin)
   useEffect(() => {
-    if (user && !user.email_confirmed_at && userRole?.role === 'student') {
+    if (user && !user.email_confirmed_at && !loading) {
+      // If userRole is loaded and user is admin, don't redirect
+      if (userRole?.role === 'admin') {
+        return;
+      }
+      // For students or when role isn't loaded yet but user is unverified
       navigate("/verify-email");
     }
-  }, [user, userRole, navigate]);
+  }, [user, userRole, loading, navigate]);
 
   return (
     <AuthContext.Provider
