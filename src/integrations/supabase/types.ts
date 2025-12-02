@@ -122,6 +122,31 @@ export type Database = {
         }
         Returns: boolean
       }
+      update_complaint_status: {
+        Args: {
+          _complaint_id: string
+          _new_status: Database["public"]["Enums"]["complaint_status"]
+          _resolution_note: string
+        }
+        Returns: {
+          attachments: string[] | null
+          category: Database["public"]["Enums"]["complaint_category"]
+          created_at: string | null
+          description: string
+          id: string
+          resolution_note: string | null
+          status: Database["public"]["Enums"]["complaint_status"]
+          student_id: string
+          title: string
+          updated_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "complaints"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       app_role: "student" | "admin"

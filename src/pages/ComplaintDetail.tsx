@@ -74,12 +74,11 @@ export default function ComplaintDetail() {
     const oldStatus = complaint.status;
 
     const { error } = await supabase
-      .from("complaints")
-      .update({
-        status: newStatus,
-        resolution_note: resolutionNote,
-      })
-      .eq("id", complaint.id);
+      .rpc("update_complaint_status", {
+        _complaint_id: complaint.id,
+        _new_status: newStatus,
+        _resolution_note: resolutionNote || null,
+      });
 
     if (error) {
       console.error("Update error:", error);
