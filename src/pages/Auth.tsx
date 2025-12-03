@@ -95,8 +95,9 @@ export default function Auth() {
       } else {
         toast({
           title: "Account created!",
-          description: "Welcome to GenCorpus Complaint Portal",
+          description: "Please check your email to verify your account",
         });
+        navigate("/verify-email");
       }
     } catch (err) {
       if (err instanceof z.ZodError) {
