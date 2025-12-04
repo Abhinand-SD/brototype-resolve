@@ -95,8 +95,10 @@ export default function Auth() {
       } else {
         toast({
           title: "Account created!",
-          description: "Please check your email to verify your account",
+          description: "Please check your email for the verification code",
         });
+        // Store email for OTP verification
+        localStorage.setItem("pendingVerificationEmail", email);
         navigate("/verify-email");
       }
     } catch (err) {
