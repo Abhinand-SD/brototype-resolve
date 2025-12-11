@@ -14,9 +14,18 @@ export default function VerifyEmail() {
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
   
   // Get email from localStorage (set during signup) or from user object
   const email = localStorage.getItem("pendingVerificationEmail") || user?.email;
+
+  // Cooldown timer effect
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
 
   // Redirect if already verified
   useEffect(() => {
@@ -63,7 +72,7 @@ export default function VerifyEmail() {
   };
 
   const handleResendOTP = async () => {
-    if (!email) return;
+    if (!email || cooldown > 0) return;
     
     setIsResending(true);
     const { error } = await supabase.auth.resend({
@@ -82,6 +91,7 @@ export default function VerifyEmail() {
         title: "Code sent!",
         description: "Check your email for the new verification code",
       });
+      setCooldown(30);
     }
     setIsResending(false);
   };
@@ -138,10 +148,10 @@ export default function VerifyEmail() {
               onClick={handleResendOTP} 
               variant="outline" 
               className="w-full"
-              disabled={isResending}
+              disabled={isResending || cooldown > 0}
             >
               {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Resend Code
+              {cooldown > 0 ? `Resend Code (${cooldown}s)` : "Resend Code"}
             </Button>
             <Button 
               onClick={handleSignOut} 
