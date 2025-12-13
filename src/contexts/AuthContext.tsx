@@ -7,6 +7,7 @@ interface Profile {
   id: string;
   name: string;
   email: string;
+  email_verified?: boolean;
 }
 
 interface UserRole {
@@ -128,15 +129,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Check email verification status - redirect unverified users (except admin)
   useEffect(() => {
-    if (user && !user.email_confirmed_at && !loading) {
-      // If userRole is loaded and user is admin, don't redirect
+    if (user && profile && !loading) {
+      // Admins bypass verification
       if (userRole?.role === 'admin') {
         return;
       }
-      // For students or when role isn't loaded yet but user is unverified
-      navigate("/verify-email");
+      // Check custom email_verified field from profiles table
+      if (!profile.email_verified) {
+        navigate("/verify-email");
+      }
     }
-  }, [user, userRole, loading, navigate]);
+  }, [user, profile, userRole, loading, navigate]);
 
   return (
     <AuthContext.Provider

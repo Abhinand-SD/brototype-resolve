@@ -65,6 +65,7 @@ export type Database = {
         Row: {
           created_at: string | null
           email: string
+          email_verified: boolean | null
           id: string
           name: string
           updated_at: string | null
@@ -72,6 +73,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           email: string
+          email_verified?: boolean | null
           id: string
           name: string
           updated_at?: string | null
@@ -79,6 +81,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           email?: string
+          email_verified?: boolean | null
           id?: string
           name?: string
           updated_at?: string | null
@@ -103,6 +106,33 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      verification_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          verified: boolean | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          email: string
+          expires_at: string
+          id?: string
+          verified?: boolean | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          verified?: boolean | null
         }
         Relationships: []
       }

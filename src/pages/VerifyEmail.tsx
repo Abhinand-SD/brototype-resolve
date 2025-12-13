@@ -8,23 +8,32 @@ import { toast } from "@/components/ui/use-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export default function VerifyEmail() {
-  const { user, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
   
   // Get email from localStorage (set during signup) or from user object
   const email = localStorage.getItem("pendingVerificationEmail") || user?.email;
 
-  // Redirect if already verified
+  // Cooldown timer
   useEffect(() => {
-    if (user?.email_confirmed_at) {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
+
+  // Redirect if already verified (check profile.email_verified)
+  useEffect(() => {
+    if (profile?.email_verified) {
       localStorage.removeItem("pendingVerificationEmail");
       navigate("/student/dashboard");
     }
-  }, [user, navigate]);
+  }, [profile, navigate]);
 
   const handleVerifyOTP = async () => {
     if (!email || otp.length !== 6) return;
@@ -75,7 +84,7 @@ export default function VerifyEmail() {
   };
 
   const handleResendOTP = async () => {
-    if (!email) return;
+    if (!email || cooldown > 0) return;
     
     setIsResending(true);
     try {
@@ -91,6 +100,7 @@ export default function VerifyEmail() {
       );
 
       if (response.ok) {
+        setCooldown(30);
         toast({
           title: "Code sent!",
           description: "Check your email for the new verification code",
@@ -186,10 +196,10 @@ export default function VerifyEmail() {
               onClick={handleResendOTP} 
               variant="outline" 
               className="w-full"
-              disabled={isResending}
+              disabled={isResending || cooldown > 0}
             >
               {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Resend Code
+              {cooldown > 0 ? `Resend Code (${cooldown}s)` : "Resend Code"}
             </Button>
             <Button 
               onClick={handleSignOut} 
