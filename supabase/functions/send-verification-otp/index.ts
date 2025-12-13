@@ -5,11 +5,6 @@ import { Resend } from "https://esm.sh/resend@4.0.0";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 // Generates 6-digit OTP, stores in DB, sends via Resend
-- Generate random 6-digit code
-- Delete any existing codes for the email
-- Insert new code with 10-minute expiration
-- Send beautifully formatted email via Resend
-
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
