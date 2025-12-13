@@ -3,9 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Mail, Loader2 } from "lucide-react";
+import { Mail, Loader2, CheckCircle } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 export default function VerifyEmail() {
@@ -14,18 +13,10 @@ export default function VerifyEmail() {
   const [otp, setOtp] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
+  const [isVerified, setIsVerified] = useState(false);
   
   // Get email from localStorage (set during signup) or from user object
   const email = localStorage.getItem("pendingVerificationEmail") || user?.email;
-
-  // Cooldown timer effect
-  useEffect(() => {
-    if (cooldown > 0) {
-      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [cooldown]);
 
   // Redirect if already verified
   useEffect(() => {
@@ -40,25 +31,37 @@ export default function VerifyEmail() {
     
     setIsVerifying(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: otp,
-        type: 'signup',
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/verify-otp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, code: otp }),
+        }
+      );
 
-      if (error) {
+      const data = await response.json();
+
+      if (!response.ok) {
         toast({
           title: "Verification failed",
-          description: error.message,
+          description: data.error || "Invalid or expired code",
           variant: "destructive",
         });
       } else {
+        setIsVerified(true);
         toast({
           title: "Email verified!",
-          description: "Your account is now active",
+          description: "Your account is now active. Redirecting...",
         });
         localStorage.removeItem("pendingVerificationEmail");
-        navigate("/student/dashboard");
+        
+        // Wait a moment then redirect
+        setTimeout(() => {
+          window.location.href = "/student/dashboard";
+        }, 2000);
       }
     } catch (err) {
       toast({
@@ -72,28 +75,42 @@ export default function VerifyEmail() {
   };
 
   const handleResendOTP = async () => {
-    if (!email || cooldown > 0) return;
+    if (!email) return;
     
     setIsResending(true);
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email,
-    });
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-verification-otp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
-    if (error) {
+      if (response.ok) {
+        toast({
+          title: "Code sent!",
+          description: "Check your email for the new verification code",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to resend verification code",
+          variant: "destructive",
+        });
+      }
+    } catch (err) {
       toast({
         title: "Error",
         description: "Failed to resend verification code",
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Code sent!",
-        description: "Check your email for the new verification code",
-      });
-      setCooldown(30);
+    } finally {
+      setIsResending(false);
     }
-    setIsResending(false);
   };
 
   const handleSignOut = async () => {
@@ -101,6 +118,27 @@ export default function VerifyEmail() {
     await signOut();
     navigate("/auth");
   };
+
+  if (isVerified) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="pt-6">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <CheckCircle className="w-10 h-10 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-center">Email Verified!</h2>
+              <p className="text-muted-foreground text-center">
+                Redirecting to your dashboard...
+              </p>
+              <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-secondary/20 p-4">
@@ -148,10 +186,10 @@ export default function VerifyEmail() {
               onClick={handleResendOTP} 
               variant="outline" 
               className="w-full"
-              disabled={isResending || cooldown > 0}
+              disabled={isResending}
             >
               {isResending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {cooldown > 0 ? `Resend Code (${cooldown}s)` : "Resend Code"}
+              Resend Code
             </Button>
             <Button 
               onClick={handleSignOut} 

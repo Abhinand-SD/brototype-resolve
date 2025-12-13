@@ -72,47 +72,74 @@ export default function Auth() {
     }
   };
 
-  const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
+const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setIsLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+  const formData = new FormData(e.currentTarget);
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  const name = formData.get("name") as string;
 
-    try {
-      signupSchema.parse({ name, email, password });
-      
-      const { error } = await signUp(email, password, name);
-
-      if (error) {
-        toast({
-          title: "Signup failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Account created!",
-          description: "Please check your email for the verification code",
-        });
-        // Store email for OTP verification
-        localStorage.setItem("pendingVerificationEmail", email);
-        navigate("/verify-email");
-      }
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        toast({
-          title: "Validation error",
-          description: err.errors[0].message,
-          variant: "destructive",
-        });
-      }
-    } finally {
+  try {
+    const parsed = signupSchema.safeParse({ email, password, name });
+    if (!parsed.success) {
+      toast({
+        title: "Invalid input",
+        description: parsed.error.errors[0].message,
+        variant: "destructive",
+      });
       setIsLoading(false);
+      return;
     }
-  };
+
+    const { error } = await signUp(email, password, name);
+    
+    if (error) {
+      toast({
+        title: "Signup failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      // Send custom OTP email
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-verification-otp`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, name }),
+          }
+        );
+
+        if (!response.ok) {
+          console.error("Failed to send OTP email");
+        }
+      } catch (otpError) {
+        console.error("Error sending OTP:", otpError);
+      }
+
+      toast({
+        title: "Account created!",
+        description: "Please check your email for the verification code",
+      });
+      localStorage.setItem("pendingVerificationEmail", email);
+      navigate("/verify-email");
+    }
+  } catch (err) {
+    toast({
+      title: "Error",
+      description: "Something went wrong. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
